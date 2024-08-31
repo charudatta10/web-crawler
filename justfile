@@ -25,7 +25,7 @@ default:
 init:
     #!pwsh
     git init
-    New-Item -ItemType "file" -Path ".gitattribute", "main.py", "requirements.json", "config.json"
+    New-Item -ItemType "file" -Path ".gitattribute", "main.py", "requirements.yaml", "config.yaml"
     New-Item -ItemType "directory" -Path "docs", "src", "tests"
     New-Item -ItemType "file" -Path .\* -Name "__init__.py" -ErrorAction SilentlyContinue
     gig gen python > .gitignore 
@@ -67,6 +67,12 @@ tests:
     python -m unittest discover -s tests
 
 # Add custom tasks, enviroment variables
+run:
+    #!pwsh
+    just config
+    conda activate w
+    python src/web_crwaler.py
+    python src/clean.py
 
 
 
