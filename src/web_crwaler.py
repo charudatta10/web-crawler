@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 import logging
 import random
 import os
+import csv
 
 class WebScrapper:
 
@@ -72,23 +73,25 @@ class WebScrapper:
         
         return title, content
 
-    def save_to_markdown(self):
-        with open(self.filename, 'w', encoding='utf-8') as file:
+    def save_to_csv(self):
+        with open(self.filename, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Title', 'Content', 'URL'])
             for article_url in self.list_article_url:
                 title, content = self._get_article_content(article_url)
                 if title and content:
-                    file.write(f"## {title}\n\n{content}\nRead more\n")
+                    writer.writerow([title, content, article_url])
                 else:
                     logging.warning(f"Skipping article {article_url} due to missing content.")
         
         logging.info(f"Articles saved to {self.filename}")
 
 if __name__ == "__main__":
-    base_url = "https://www.google.com"
-    search_query = "Generative%20adversarial%20network"
-    filename = "articles.md"
-    proxies = [os.environ.get('proxy1'),os.environ.get('proxy2'),os.environ.get('proxy3')]
+    base_url = "https://search.yahoo.com"
+    search_query = "Wildlife%20forensic%20crime%20trade"
+    filename = "articles.csv"
+    proxies = [os.environ.get('proxy1'), os.environ.get('proxy2'), os.environ.get('proxy3')]
     mac_address = os.environ.get('mac')
     w = WebScrapper(base_url, search_query, filename, proxies, mac_address)
     w.scrape_articles()
-    w.save_to_markdown()
+    w.save_to_csv()
